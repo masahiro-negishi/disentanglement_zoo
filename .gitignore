@@ -1,2 +1,4 @@
 *.code-workspace
 .mypy_cache/
+lib/data/source/
+*__pycache__/
