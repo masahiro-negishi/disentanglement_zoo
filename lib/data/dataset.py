@@ -54,7 +54,7 @@ def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int
         raise ValueError(f'Dataset {dataset} is not supported')
 
     # indices for train set
-    assert train_size <= len(fullset)
+    assert train_size <= len(fullset), "size of train set must be smaller than or equal to # of all samples"
     torch.manual_seed(seed)
     indices = torch.randperm(len(fullset))
     train_indices, _ = torch.sort(indices[:train_size])

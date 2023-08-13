@@ -3,8 +3,8 @@
 torch==2.0.0+cu118
 torchvision==0.15.1+cu118
 matplotlib==3.6.3
-
 h5py==3.9.0
+pytest==7.4.0
 
 # flake8==6.0.0
 # black==23.3.0
