@@ -13,8 +13,12 @@ class TrainSet(Dataset):
             dataset (child class of GroundTruthDataset): full dataset
             indices (torch.Tensor): indices for train set
         """
-        self.images = torch.tensor(dataset.images[indices.tolist()]) # (train_size, shape of input image)
-        self.labels = torch.tensor(dataset.labels[indices.tolist()]) # (train_size, num_factors)
+        self.images = torch.tensor(
+            dataset.images[indices.tolist()]
+        )  # (train_size, shape of input image)
+        self.labels = torch.tensor(
+            dataset.labels[indices.tolist()]
+        )  # (train_size, num_factors)
 
     def __getitem__(self, index):
         return self.images[index], self.labels[index]
@@ -45,23 +49,27 @@ def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int
         seed (int): random seed
 
     Retruns:
-        trainset (TrainSet): train set
+        trainloader (torch.utils.data.DataLoader): train set
     """
     # select dataset
-    if dataset == 'shapes3d':
+    if dataset == "shapes3d":
         fullset = Shapes3D()
     else:
-        raise ValueError(f'Dataset {dataset} is not supported')
+        raise ValueError(f"Dataset {dataset} is not supported")
 
     # indices for train set
-    assert train_size <= len(fullset), "size of train set must be smaller than or equal to # of all samples"
+    assert train_size <= len(
+        fullset
+    ), "size of train set must be smaller than or equal to # of all samples"
     torch.manual_seed(seed)
     indices = torch.randperm(len(fullset))
     train_indices, _ = torch.sort(indices[:train_size])
 
     # train set
     trainset = TrainSet(fullset, train_indices)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
+    trainloader = torch.utils.data.DataLoader(
+        trainset, batch_size=batch_size, shuffle=True
+    )
 
     # close fullset
     fullset.close()

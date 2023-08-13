@@ -1,4 +1,4 @@
-class GroundTruthDataset():
+class GroundTruthDataset:
     """Class of datasets"""
 
     def __len__(self):

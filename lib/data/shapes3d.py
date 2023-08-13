@@ -21,10 +21,12 @@ class Shapes3D(GroundTruthDataset):
     """
 
     def __init__(self):
-        source_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'source/3dshapes.h5')
-        self.h5pydata = h5py.File(source_path, 'r')
-        self.images = self.h5pydata['images'] # (480000, 64, 64, 3)
-        self.labels = self.h5pydata['labels'] # (480000, 6)
+        source_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "source/3dshapes.h5"
+        )
+        self.h5pydata = h5py.File(source_path, "r")
+        self.images = self.h5pydata["images"]  # (480000, 64, 64, 3)
+        self.labels = self.h5pydata["labels"]  # (480000, 6)
 
     def __len__(self):
         return 480000
