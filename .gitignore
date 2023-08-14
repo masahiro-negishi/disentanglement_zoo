@@ -2,3 +2,8 @@
 .mypy_cache/
 lib/data/source/
 *__pycache__/
+*.pytest_cache/
+*.pt
+script/*
+!script/interface.py
+!script/test_lib.sh
