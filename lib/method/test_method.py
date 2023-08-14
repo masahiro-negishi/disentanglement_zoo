@@ -1,6 +1,7 @@
 import pytest
 import torch
-from vae import VAE
+
+from .vae import VAE
 
 
 @pytest.mark.parametrize(

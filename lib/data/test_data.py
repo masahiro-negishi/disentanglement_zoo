@@ -1,5 +1,6 @@
 import pytest
-from dataset import prepare_dataloader
+
+from .dataset import prepare_dataloader
 
 
 @pytest.mark.parametrize(

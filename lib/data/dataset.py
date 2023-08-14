@@ -1,6 +1,7 @@
 import torch
-from shapes3d import Shapes3D
 from torch.utils.data import Dataset
+
+from .shapes3d import Shapes3D
 
 
 class TrainSet(Dataset):

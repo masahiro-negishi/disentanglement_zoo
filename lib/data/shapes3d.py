@@ -1,7 +1,8 @@
 import os
 
 import h5py
-from full_data import GroundTruthDataset
+
+from .full_data import GroundTruthDataset
 
 
 class Shapes3D(GroundTruthDataset):
