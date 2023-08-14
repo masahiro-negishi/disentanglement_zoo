@@ -13,8 +13,8 @@ class TrainSet(Dataset):
             dataset (child class of GroundTruthDataset): full dataset
             indices (torch.Tensor): indices for train set
         """
-        self.images = torch.tensor(
-            dataset.images[indices.tolist()]
+        self.images = (
+            torch.tensor(dataset.images[indices.tolist()]) / 255
         )  # (train_size, shape of input image)
         self.labels = torch.tensor(
             dataset.labels[indices.tolist()]
