@@ -19,6 +19,9 @@ class TrainSet(Dataset):
         self.labels = torch.tensor(
             dataset.labels[indices.tolist()]
         )  # (train_size, num_factors)
+        self._num_factors = dataset.num_factors
+        self._factors_num_values = dataset.factors_num_values
+        self._observation_shape = dataset.observation_shape
 
     def __getitem__(self, index):
         return self.images[index], self.labels[index]
@@ -28,15 +31,15 @@ class TrainSet(Dataset):
 
     @property
     def num_factors(self):
-        return self.dataset.num_factors
+        return self._num_factors
 
     @property
     def factors_num_values(self):
-        return self.dataset.factors_num_values
+        return self._factors_num_values
 
     @property
     def observation_shape(self):
-        return self.dataset.observation_shape
+        return self._observation_shape
 
 
 def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int):
