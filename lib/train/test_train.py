@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import torch
 
 from .train import train
 
@@ -37,6 +38,8 @@ def test_train(
     save_model,
     save_path,
 ):
+    if device == "cuda" and not torch.cuda.is_available():
+        pytest.skip("Skip GPU test because cuda is not available")
     train(
         dataset,
         train_size,
