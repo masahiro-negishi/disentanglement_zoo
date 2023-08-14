@@ -15,14 +15,18 @@ class TrainSet(Dataset):
             indices (torch.Tensor): indices for train set
         """
         self.images = (
-            torch.tensor(dataset.images[indices.tolist()]) / 255
-        )  # (train_size, shape of input image)
+            torch.permute(torch.tensor(dataset.images[indices.tolist()]), (0, 3, 1, 2))
+            / 255
+        )
+        # (train_size, C, H, W)
         self.labels = torch.tensor(
             dataset.labels[indices.tolist()]
         )  # (train_size, num_factors)
         self._num_factors = dataset.num_factors
         self._factors_num_values = dataset.factors_num_values
-        self._observation_shape = dataset.observation_shape
+        self._observation_shape = [
+            dataset.observation_shape[2]
+        ] + dataset.observation_shape[:2]
 
     def __getitem__(self, index):
         return self.images[index], self.labels[index]
@@ -40,7 +44,7 @@ class TrainSet(Dataset):
 
     @property
     def observation_shape(self):
-        return self._observation_shape
+        return self._observation_shape  # (C, H, W)
 
 
 def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int):

@@ -6,8 +6,8 @@ from .dataset import prepare_dataloader
 @pytest.mark.parametrize(
     ("dataset", "train_size", "batch_size", "seed", "input_shape", "num_factors"),
     [
-        ("shapes3d", 100, 10, 0, (64, 64, 3), 6),
-        ("shapes3d", 200, 15, 1, (64, 64, 3), 6),
+        ("shapes3d", 100, 10, 0, (3, 64, 64), 6),
+        ("shapes3d", 200, 15, 1, (3, 64, 64), 6),
     ],
 )
 def test_prepare_dataloader(
