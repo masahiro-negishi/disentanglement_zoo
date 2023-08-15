@@ -59,8 +59,8 @@ def train(
             loss = model.loss(images, lamb, mean, logvar)
             loss.backward()
             optimizer.step()
-            if train_log != -1 and (epoch + 1) % train_log == 0:
-                print(f"epoch: {epoch}, loss: {loss.item()}")
+        if train_log != -1 and (epoch + 1) % train_log == 0:
+            print(f"epoch: {epoch}, loss: {loss.item()}")
 
     # save
     if save_model:

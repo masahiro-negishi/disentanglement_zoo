@@ -121,4 +121,4 @@ class VAE(nn.Module):
         kl_loss = (
             0.5 * torch.sum(-1 - logvar + mean**2 + torch.exp(logvar)) / x.shape[0]
         )
-        return recon_loss - kl_loss
+        return -(recon_loss - kl_loss)  # loss = - ELBO
