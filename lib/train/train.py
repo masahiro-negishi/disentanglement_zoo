@@ -31,6 +31,9 @@ def train(
         train_log (int): log every train_log epochs. If set to -1, no log.
         save_model (bool): save model or not
         save_path (str, optional): path to save model.
+
+    Returns:
+        train_loss_history (list): train loss history
     """
     # device check
     if device == "cuda" and not torch.cuda.is_available():
@@ -50,8 +53,10 @@ def train(
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     # train
+    train_loss_history = []
     for epoch in range(epochs):
         model.train()
+        loss_sum = 0
         for images, _ in trainloader:  # unsupervised learning
             images = images.to(device)
             optimizer.zero_grad()
@@ -59,9 +64,13 @@ def train(
             loss = model.loss(images, lamb, mean, logvar)
             loss.backward()
             optimizer.step()
+            loss_sum += loss.item()
+        train_loss_history.append(loss_sum / len(trainloader))
         if train_log != -1 and (epoch + 1) % train_log == 0:
             print(f"epoch: {epoch}, loss: {loss.item()}")
 
     # save
     if save_model:
         torch.save(model.state_dict(), save_path)
+
+    return train_loss_history

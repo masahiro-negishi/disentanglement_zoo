@@ -40,7 +40,7 @@ def test_train(
 ):
     if device == "cuda" and not torch.cuda.is_available():
         pytest.skip("Skip GPU test because cuda is not available")
-    train(
+    train_loss_history = train(
         dataset,
         train_size,
         batch_size,
@@ -53,6 +53,8 @@ def test_train(
         save_model,
         save_path,
     )
+    assert len(train_loss_history) == epochs
+    assert type(train_loss_history[0]) == float
     if save_model:
         assert os.path.isfile("model.pt")
         os.remove("model.pt")

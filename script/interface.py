@@ -4,6 +4,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 from lib.train.train import train
+from lib.visualize.loss_curve import plot_loss_curve
 
 
 def main():
@@ -20,9 +21,11 @@ def main():
     parser.add_argument("--train_log", type=int, required=True)
     parser.add_argument("--save_model", action="store_true")
     parser.add_argument("--save_path", type=str, default="model.pt")
+    parser.add_argument("--plot_loss", action="store_true")
+    parser.add_argument("--loss_figure_path", type=str, default="loss.png")
     args = parser.parse_args()
 
-    train(
+    train_loss_history = train(
         dataset=args.dataset,
         train_size=args.train_size,
         batch_size=args.batch_size,
@@ -35,6 +38,13 @@ def main():
         save_model=args.save_model,
         save_path=args.save_path,
     )
+
+    if args.plot_loss:
+        plot_loss_curve(
+            train_loss_history,
+            args.loss_figure_path,
+            f"dataset={args.dataset}, seed={args.seed}",
+        )
 
 
 if __name__ == "__main__":
