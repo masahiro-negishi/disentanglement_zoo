@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import torch
 
 from ..data.dataset import prepare_dataloader
@@ -39,9 +42,16 @@ def train(
     if device == "cuda" and not torch.cuda.is_available():
         raise ValueError("cuda is not available")
 
+    # set seeds
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
     # preapre dataloader
     trainloader = prepare_dataloader(
-        dataset=dataset, train_size=train_size, batch_size=batch_size, seed=seed
+        dataset=dataset, train_size=train_size, batch_size=batch_size
     )
 
     # prepare model

@@ -4,22 +4,21 @@ from .dataset import prepare_dataloader
 
 
 @pytest.mark.parametrize(
-    ("dataset", "train_size", "batch_size", "seed", "input_shape", "num_factors"),
+    ("dataset", "train_size", "batch_size", "input_shape", "num_factors"),
     [
-        ("shapes3d", 100, 10, 0, (3, 64, 64), 6),
-        ("shapes3d", 200, 15, 1, (3, 64, 64), 6),
+        ("shapes3d", 100, 10, (3, 64, 64), 6),
+        ("shapes3d", 200, 15, (3, 64, 64), 6),
     ],
 )
 def test_prepare_dataloader(
     dataset: str,
     train_size: int,
     batch_size: int,
-    seed: int,
     input_shape: list,
     num_factors: int,
 ):
     trainloader = prepare_dataloader(
-        dataset=dataset, train_size=train_size, batch_size=batch_size, seed=seed
+        dataset=dataset, train_size=train_size, batch_size=batch_size
     )
     for images, labels in trainloader:
         assert images.shape[0] == batch_size
@@ -35,17 +34,15 @@ def test_prepare_dataloader(
 
 
 @pytest.mark.parametrize(
-    ("dataset", "train_size", "batch_size", "seed"),
+    ("dataset", "train_size", "batch_size"),
     [
-        ("shapes3d", 480001, 10, 0),
+        ("shapes3d", 480001, 10),
     ],
 )
-def test_prepare_dataloader_exception(
-    dataset: str, train_size: int, batch_size: int, seed: int
-):
+def test_prepare_dataloader_exception(dataset: str, train_size: int, batch_size: int):
     with pytest.raises(AssertionError) as e:
         _ = prepare_dataloader(
-            dataset=dataset, train_size=train_size, batch_size=batch_size, seed=seed
+            dataset=dataset, train_size=train_size, batch_size=batch_size
         )
     assert (
         str(e.value)

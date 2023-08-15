@@ -47,14 +47,13 @@ class TrainSet(Dataset):
         return self._observation_shape  # (C, H, W)
 
 
-def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int):
+def prepare_dataloader(dataset: str, train_size: int, batch_size: int):
     """prepare dataloader for training
 
     Args:
         dataset (str): dataset name
         train_size (int): # of samples in train set
         batch_size (int): batch size for training
-        seed (int): random seed
 
     Retruns:
         trainloader (torch.utils.data.DataLoader): train set
@@ -69,7 +68,6 @@ def prepare_dataloader(dataset: str, train_size: int, batch_size: int, seed: int
     assert train_size <= len(
         fullset
     ), "size of train set must be smaller than or equal to # of all samples"
-    torch.manual_seed(seed)
     indices = torch.randperm(len(fullset))
     train_indices, _ = torch.sort(indices[:train_size])
 
