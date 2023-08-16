@@ -88,7 +88,9 @@ def train(
     if save:
         if not os.path.exists(save_dir):
             os.makedirs(os.path.join(save_dir, "train"))
-        torch.save(model.state_dict(), os.path.join(save_dir, "train", "model.pt"))
+        torch.save(
+            model.to("cpu").state_dict(), os.path.join(save_dir, "train", "model.pt")
+        )
         settings = {
             "dataset": dataset,
             "train_size": train_size,
