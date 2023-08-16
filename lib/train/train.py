@@ -1,3 +1,5 @@
+import json
+import os
 import random
 
 import numpy as np
@@ -5,6 +7,7 @@ import torch
 
 from ..data.dataset import prepare_dataloader
 from ..method.vae import VAE
+from .loss_curve import plot_loss_curve
 
 
 def train(
@@ -17,8 +20,8 @@ def train(
     lr: float,
     epochs: int,
     train_log: int,
-    save_model: bool,
-    save_path: str = "model.pt",
+    save: bool,
+    save_dir: str = ".",
 ):
     """train a model
 
@@ -32,11 +35,13 @@ def train(
         lr (float): learning rate
         epochs (int): # of epochs
         train_log (int): log every train_log epochs. If set to -1, no log.
-        save_model (bool): save model or not
-        save_path (str, optional): path to save model.
+        save (bool): save model and other configurations or not
+        save_dir (str, optional): directory to save model.
 
     Returns:
         train_loss_history (list): train loss history
+        model (a child of nn.Module): trained model
+        trainloader (torch.utils.data.DataLoader): train dataloader
     """
     # device check
     if device == "cuda" and not torch.cuda.is_available():
@@ -80,7 +85,25 @@ def train(
             print(f"epoch: {epoch}, loss: {loss.item()}")
 
     # save
-    if save_model:
-        torch.save(model.state_dict(), save_path)
-
-    return train_loss_history
+    if save:
+        if not os.path.exists(save_dir):
+            os.makedirs(os.path.join(save_dir, "train"))
+        torch.save(model.state_dict(), os.path.join(save_dir, "train", "model.pt"))
+        settings = {
+            "dataset": dataset,
+            "train_size": train_size,
+            "batch_size": batch_size,
+            "seed": seed,
+            "z_dim": z_dim,
+            "device": device,
+            "lr": lr,
+            "epochs": epochs,
+            "train_log": train_log,
+        }
+        with open(os.path.join(save_dir, "train", "settings.json"), "w") as f:
+            json.dump(settings, f)
+        plot_loss_curve(
+            train_loss_history,
+            os.path.join(save_dir, "train", "train_loss.png"),
+            "train loss",
+        )

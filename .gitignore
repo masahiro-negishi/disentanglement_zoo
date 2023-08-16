@@ -7,3 +7,4 @@ lib/data/source/
 script/*
 !script/interface.py
 !script/test_lib.sh
+result/*
