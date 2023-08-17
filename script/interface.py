@@ -15,6 +15,7 @@ def main():
     parser_train = subparsers.add_parser("train")
     parser_train.add_argument("--dataset", type=str, required=True)
     parser_train.add_argument("--train_size", type=int, required=True)
+    parser_train.add_argument("--eval_size", type=int, required=True)
     parser_train.add_argument("--batch_size", type=int, required=True)
     parser_train.add_argument("--seed", type=int, required=True)
     parser_train.add_argument("--z_dim", type=int, required=True)
@@ -37,6 +38,7 @@ def main():
         train(
             dataset=args.dataset,
             train_size=args.train_size,
+            eval_size=args.eval_size,
             batch_size=args.batch_size,
             seed=args.seed,
             z_dim=args.z_dim,

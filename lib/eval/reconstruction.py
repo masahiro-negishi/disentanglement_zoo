@@ -18,7 +18,7 @@ def visualize_reconstruction(
         save_path (str): path to save the visualization
         device (str): device
     """
-    assert num <= len(dataloader), "num must be less than the dataset size"
+    assert num <= len(dataloader.dataset), "num must be less than the dataset size"
     model.eval()
     ground_truth = []
     reconstruction = []

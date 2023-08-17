@@ -40,9 +40,10 @@ def eval(save_dir: str, reconstruction: bool, num: int, device: str):
         model.to(device)
     else:
         model.load_state_dict(torch.load(os.path.join(save_dir, "train", "model.pt")))
-    trainloader = prepare_dataloader(
+    trainloader, evalloader = prepare_dataloader(
         dataset=settings["dataset"],
         train_size=settings["train_size"],
+        eval_size=settings["eval_size"],
         batch_size=settings["batch_size"],
     )
 
@@ -54,6 +55,13 @@ def eval(save_dir: str, reconstruction: bool, num: int, device: str):
             model=model,
             dataloader=trainloader,
             num=num,
-            save_path=os.path.join(save_dir, "eval", "reconstruction.png"),
+            save_path=os.path.join(save_dir, "eval", "recons_train.png"),
+            device=device,
+        )
+        visualize_reconstruction(
+            model=model,
+            dataloader=evalloader,
+            num=num,
+            save_path=os.path.join(save_dir, "eval", "recons_eval.png"),
             device=device,
         )

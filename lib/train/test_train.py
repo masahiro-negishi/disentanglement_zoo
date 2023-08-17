@@ -11,6 +11,7 @@ from .train import train
     (
         "dataset",
         "train_size",
+        "eval_size",
         "batch_size",
         "seed",
         "z_dim",
@@ -25,6 +26,7 @@ from .train import train
         (
             "shapes3d",
             100,
+            50,
             32,
             0,
             10,
@@ -38,6 +40,7 @@ from .train import train
         (
             "shapes3d",
             200,
+            30,
             10,
             1,
             20,
@@ -46,13 +49,14 @@ from .train import train
             2,
             2,
             True,
-            os.path.join(os.path.dirname(__file__), "..", "result", "test"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "result", "test"),
         ),
     ],
 )
 def test_train(
     dataset,
     train_size,
+    eval_size,
     batch_size,
     seed,
     z_dim,
@@ -68,6 +72,7 @@ def test_train(
     train(
         dataset,
         train_size,
+        eval_size,
         batch_size,
         seed,
         z_dim,
@@ -81,9 +86,11 @@ def test_train(
     if save:
         assert os.path.exists(os.path.join(save_dir, "train", "model.pt"))
         assert os.path.exists(os.path.join(save_dir, "train", "train_loss.png"))
+        assert os.path.exists(os.path.join(save_dir, "train", "eval_loss.png"))
         assert os.path.exists(os.path.join(save_dir, "train", "settings.json"))
         os.remove(os.path.join(save_dir, "train", "model.pt"))
         os.remove(os.path.join(save_dir, "train", "train_loss.png"))
+        os.remove(os.path.join(save_dir, "train", "eval_loss.png"))
         os.remove(os.path.join(save_dir, "train", "settings.json"))
         os.rmdir(os.path.join(save_dir, "train"))
         os.rmdir(save_dir)
