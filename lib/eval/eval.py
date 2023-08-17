@@ -7,16 +7,18 @@ import torch
 
 from ..data.dataset import prepare_dataloader
 from ..method.vae import VAE
+from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
 
 
-def eval(save_dir: str, reconstruction: bool, num: int, device: str):
+def eval(save_dir: str, recons: bool, num: int, latent_dist: str, device: str):
     """evaluate trained model
 
     Args:
         save_dir (str): path to directory where model is saved and evaluation results will be saved
-        reconstruction (bool): whether to do reconstruction
+        recons (bool): whether to do reconstruction
         num (int): # of samples to do reconstruction
+        latent_dist (bool): whether to visualize latent distribution
         device (str): device to use
     """
     if not os.path.exists(save_dir):
@@ -52,7 +54,7 @@ def eval(save_dir: str, reconstruction: bool, num: int, device: str):
     # evaluate
     if not os.path.exists(os.path.join(save_dir, "eval")):
         os.mkdir(os.path.join(save_dir, "eval"))
-    if reconstruction:
+    if recons:
         visualize_reconstruction(
             model=model,
             dataloader=trainloader,
@@ -65,5 +67,18 @@ def eval(save_dir: str, reconstruction: bool, num: int, device: str):
             dataloader=evalloader,
             num=num,
             save_path=os.path.join(save_dir, "eval", "recons_eval.png"),
+            device=device,
+        )
+    if latent_dist:
+        visualize_latent_distribution(
+            model=model,
+            dataloader=trainloader,
+            save_path=os.path.join(save_dir, "eval", "latent_dist_train.png"),
+            device=device,
+        )
+        visualize_latent_distribution(
+            model=model,
+            dataloader=evalloader,
+            save_path=os.path.join(save_dir, "eval", "latent_dist_eval.png"),
             device=device,
         )

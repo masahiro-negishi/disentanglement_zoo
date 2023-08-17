@@ -29,8 +29,9 @@ def main():
     parser_eval = subparsers.add_parser("eval")
     parser_eval.add_argument("--save_dir", type=str, required=True)
     parser_eval.add_argument("--device", type=str, required=True)
-    parser_eval.add_argument("--reconstruction", action="store_true")
+    parser_eval.add_argument("--recons", action="store_true")
     parser_eval.add_argument("--num", type=int, default=5)
+    parser_eval.add_argument("--latent_dist", action="store_true")
 
     args = parser.parse_args()
 
@@ -52,8 +53,9 @@ def main():
     else:
         eval(
             save_dir=args.save_dir,
-            reconstruction=args.reconstruction,
+            recons=args.recons,
             num=args.num,
+            latent_dist=args.latent_dist,
             device=args.device,
         )
 

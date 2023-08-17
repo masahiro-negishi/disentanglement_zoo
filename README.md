@@ -29,5 +29,5 @@ python script/interface.py train --dataset=shapes3d --train_size=10000 --eval_si
 
 For evaluation
 ```
-python script/interface.py eval --save_dir="result/shape3d" --device=cpu --reconstruction --num=5
+python script/interface.py eval --save_dir="result/shape3d" --device=cpu --recons --num=5 --latent_dist
 ```
