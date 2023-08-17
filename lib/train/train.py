@@ -62,9 +62,12 @@ def train(
         train_size=train_size,
         eval_size=eval_size,
         batch_size=batch_size,
+        seed=seed,
+        only_initial_shuffle_train=False,
     )
 
     # prepare model
+    torch.manual_seed(seed)
     model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=z_dim).to(
         device
     )
@@ -75,6 +78,7 @@ def train(
     # train
     train_loss_history = []
     eval_loss_history = []
+    torch.manual_seed(seed)
     for epoch in range(epochs):
         model.train()
         train_loss_sum = 0

@@ -29,7 +29,12 @@ def test_visualize_reconstruction(dataset: str, num: int, save_dir: str, device:
     if device == "cuda" and not torch.cuda.is_available():
         pytest.skip("Skip GPU test because cuda is not available")
     trainloader, evalloader = prepare_dataloader(
-        dataset=dataset, train_size=10, eval_size=6, batch_size=2
+        dataset=dataset,
+        train_size=10,
+        eval_size=6,
+        batch_size=2,
+        seed=0,
+        only_initial_shuffle_train=True,
     )
     model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=10).to(device)
     os.makedirs(os.path.join(save_dir, "eval"))

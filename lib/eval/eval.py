@@ -45,6 +45,8 @@ def eval(save_dir: str, reconstruction: bool, num: int, device: str):
         train_size=settings["train_size"],
         eval_size=settings["eval_size"],
         batch_size=settings["batch_size"],
+        seed=settings["seed"],
+        only_initial_shuffle_train=True,
     )
 
     # evaluate
