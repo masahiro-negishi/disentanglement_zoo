@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE
+from ..method.vae import VAE, BetaVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
 
@@ -34,7 +34,12 @@ def eval(save_dir: str, recons: bool, num: int, latent_dist: str, device: str):
     random.seed(settings["seed"])
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    model = VAE(channels=3, z_dim=settings["z_dim"])
+    if settings["model_name"] == "VAE":
+        model = VAE(channels=3, z_dim=settings["z_dim"])
+    elif settings["model_name"] == "BetaVAE":
+        model = BetaVAE(channels=3, z_dim=settings["z_dim"], beta=settings["beta"])
+    else:
+        raise ValueError(f"{settings['model_name']} is not supported")
     if device == "cuda":
         model.load_state_dict(
             torch.load(os.path.join(save_dir, "train", "model.pt"), map_location="cuda")

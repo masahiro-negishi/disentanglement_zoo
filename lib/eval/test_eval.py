@@ -4,12 +4,14 @@ import pytest
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE
+from ..method.vae import VAE, BetaVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
 
 
-@pytest.fixture(scope="module", params=[("shapes3d", "cpu"), ("shapes3d", "cuda")])
+@pytest.fixture(
+    scope="module", params=[("shapes3d", "cpu", "VAE"), ("shapes3d", "cuda", "BetaVAE")]
+)
 def model_and_data(request):
     if request.param[1] == "cuda" and not torch.cuda.is_available():
         pytest.skip("Skip GPU test because cuda is not available")
@@ -21,9 +23,16 @@ def model_and_data(request):
         seed=0,
         only_initial_shuffle_train=True,
     )
-    model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=10).to(
-        request.param[1]
-    )
+    if request.param[2] == "VAE":
+        model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=10).to(
+            request.param[1]
+        )
+    elif request.param[2] == "BetaVAE":
+        model = BetaVAE(
+            channels=trainloader.dataset.observation_shape[0], z_dim=10, beta=5.0
+        ).to(request.param[1])
+    else:
+        raise ValueError(f"{request.param[2]} is not supported")
     return model, trainloader, evalloader, request.param[1]
 
 

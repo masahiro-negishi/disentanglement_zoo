@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE
+from ..method.vae import VAE, BetaVAE
 from .loss_curve import plot_loss_curve
 
 
@@ -15,6 +15,7 @@ def train(
     train_size: int,
     eval_size: int,
     batch_size: int,
+    model_name: str,
     seed: int,
     z_dim: int,
     device: str,
@@ -23,6 +24,7 @@ def train(
     train_log: int,
     save: bool,
     save_dir: str = ".",
+    **kwargs,
 ):
     """train a model
 
@@ -31,6 +33,7 @@ def train(
         train_size (int): # of samples in train set
         eval_size (int): # of samples in eval set
         batch_size (int): batch size for training
+        model_name (str): model name
         seed (int): random seed
         z_dim (int): dimension of latent variable
         device (str): device name
@@ -39,11 +42,10 @@ def train(
         train_log (int): log every train_log epochs. If set to -1, no log.
         save (bool): save model and other configurations or not
         save_dir (str, optional): directory to save model.
+        **kwargs: other arguments
 
     Returns:
-        train_loss_history (list): train loss history
-        model (a child of nn.Module): trained model
-        trainloader (torch.utils.data.DataLoader): train dataloader
+        None
     """
     # device check
     if device == "cuda" and not torch.cuda.is_available():
@@ -68,9 +70,18 @@ def train(
 
     # prepare model
     torch.manual_seed(seed)
-    model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=z_dim).to(
-        device
-    )
+    if model_name == "VAE":
+        model = VAE(channels=trainloader.dataset.observation_shape[0], z_dim=z_dim).to(
+            device
+        )
+    elif model_name == "BetaVAE":
+        model = BetaVAE(
+            channels=trainloader.dataset.observation_shape[0],
+            z_dim=z_dim,
+            beta=kwargs["beta"],
+        ).to(device)
+    else:
+        raise ValueError("invalid model name")
 
     # prepare optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -137,14 +148,17 @@ def train(
     if save:
         if not os.path.exists(save_dir):
             os.makedirs(os.path.join(save_dir, "train"))
+        # model
         torch.save(
             model.to("cpu").state_dict(), os.path.join(save_dir, "train", "model.pt")
         )
+        # settings
         settings = {
             "dataset": dataset,
             "train_size": train_size,
             "eval_size": eval_size,
             "batch_size": batch_size,
+            "model_name": model_name,
             "seed": seed,
             "z_dim": z_dim,
             "device": device,
@@ -152,8 +166,11 @@ def train(
             "epochs": epochs,
             "train_log": train_log,
         }
+        if model_name == "BetaVAE":
+            settings["beta"] = kwargs["beta"]
         with open(os.path.join(save_dir, "train", "settings.json"), "w") as f:
             json.dump(settings, f)
+        # loss curve
         plot_loss_curve(
             train_loss_history,
             train_recons_loss_history,

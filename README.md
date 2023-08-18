@@ -15,6 +15,14 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+## Available models
+- VAE
+- BetaVAE
+
+## Available metrics
+- visualization of reconstruction of original inputs
+- visualization of distributions of means and logvars
+
 ## Test lib
 You can run pytest for all test files in lib as follows.
 ```
@@ -24,7 +32,7 @@ You can run pytest for all test files in lib as follows.
 ## Example
 For training
 ```
-python script/interface.py train --dataset=shapes3d --train_size=10000 --eval_size=1000 --batch_size=64 --seed=0 --z_dim=10 --device=cuda --lr=1e-4 --epochs=30 --train_log=1 --save --save_dir="result/shape3d"
+python script/interface.py train --dataset=shapes3d --train_size=10000 --eval_size=1000 --batch_size=64 --seed=0 --z_dim=10 --device=cuda --lr=1e-4 --epochs=30 --train_log=1 --save --save_dir="result/shape3d BetaVAE --beta=10.0"
 ```
 
 For evaluation
