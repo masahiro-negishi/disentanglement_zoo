@@ -14,3 +14,20 @@ source your_env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+## Test lib
+You can run pytest for all test files in lib as follows.
+```
+./script/test_lib.sh
+```
+
+## Example
+For training
+```
+python script/interface.py train --dataset=shapes3d --train_size=10000 --eval_size=1000 --batch_size=64 --seed=0 --z_dim=10 --device=cuda --lr=1e-4 --epochs=30 --train_log=1 --save --save_dir="result/shape3d"
+```
+
+For evaluation
+```
+python script/interface.py eval --save_dir="result/shape3d" --device=cpu --recons --num=5 --latent_dist
+```
