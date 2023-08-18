@@ -115,10 +115,11 @@ class VAE(nn.Module):
             torch.Tensor: kl loss
         """
         # reconstruction loss (ref: disentanglement_lib by Google)
+        clipped_x = torch.clamp(x, 1e-6, 1 - 1e-6)
         recon_loss = (
-            nn.functional.binary_cross_entropy(lamb, x, reduction="sum") / x.shape[0]
-            - nn.functional.binary_cross_entropy(x, x, reduction="sum") / x.shape[0]
-        )
+            nn.functional.binary_cross_entropy(lamb, x, reduction="sum")
+            - nn.functional.binary_cross_entropy(clipped_x, clipped_x, reduction="sum")
+        ) / x.shape[0]
         # recon_loss = ((x - lamb) ** 2).sum() / x.shape[0]
 
         # KL divergence loss
