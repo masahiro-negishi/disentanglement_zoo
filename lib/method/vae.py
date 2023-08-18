@@ -110,7 +110,9 @@ class VAE(nn.Module):
             logvar (torch.Tensor): (B, z_dim)
 
         Returns:
-            torch.Tensor: loss
+            torch.Tensor: total loss
+            torch.Tensor: reconstruction loss
+            torch.Tensor: kl loss
         """
         # reconstruction loss (ref: disentanglement_lib by Google)
         recon_loss = (
@@ -123,4 +125,4 @@ class VAE(nn.Module):
         kl_loss = (
             0.5 * torch.sum(-1 - logvar + mean**2 + torch.exp(logvar)) / x.shape[0]
         )
-        return recon_loss + kl_loss  # loss = - ELBO
+        return recon_loss + kl_loss, recon_loss, kl_loss  # loss = - ELBO

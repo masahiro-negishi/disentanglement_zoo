@@ -19,7 +19,11 @@ def test_VAE(channels: int, z_dim: int, batch_size: int, device: str):
     assert lamb.shape == x.shape
     assert mean.shape == (batch_size, z_dim)
     assert logvar.shape == (batch_size, z_dim)
-    l = vae.loss(x=x, lamb=lamb, mean=mean, logvar=logvar)
-    assert l.shape == ()
-    assert type(l) == torch.Tensor
-    l.backward()
+    loss, recons_loss, kl_loss = vae.loss(x=x, lamb=lamb, mean=mean, logvar=logvar)
+    assert loss.shape == ()
+    assert type(loss) == torch.Tensor
+    assert recons_loss.shape == ()
+    assert type(recons_loss) == torch.Tensor
+    assert kl_loss.shape == ()
+    assert type(kl_loss) == torch.Tensor
+    loss.backward()

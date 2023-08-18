@@ -96,13 +96,16 @@ def test_train(
         os.rmdir(save_dir)
 
 
-@pytest.mark.parametrize(
-    ("loss_history", "save_path", "title"),
-    [
-        ([100, 50, 25, 12.5, 6.25], "train_loss.png", "loss"),
-    ],
-)
-def test_plot_loss_curve(loss_history: list, save_path: str, title: str):
-    plot_loss_curve(loss_history, save_path, title)
-    assert os.path.exists(save_path)
-    os.remove(save_path)
+def test_plot_loss_curve():
+    loss_history = list(range(10))
+    recons_loss_history = list(range(10))
+    kl_loss_history = list(range(10))
+    plot_loss_curve(
+        loss_history,
+        recons_loss_history,
+        kl_loss_history,
+        "train_loss.png",
+        "Train loss",
+    )
+    assert os.path.exists("train_loss.png")
+    os.remove("train_loss.png")

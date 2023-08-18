@@ -77,31 +77,60 @@ def train(
 
     # train
     train_loss_history = []
+    train_recons_loss_history = []
+    train_kl_loss_history = []
     eval_loss_history = []
+    eval_recons_loss_history = []
+    eval_kl_loss_history = []
     torch.manual_seed(seed)
     for epoch in range(epochs):
+        # training
         model.train()
         train_loss_sum = 0
+        train_recons_loss_sum = 0
+        train_kl_loss_sum = 0
         for images, _ in trainloader:  # unsupervised learning
             images = images.to(device)
             optimizer.zero_grad()
             lamb, mean, logvar = model(images)
-            loss = model.loss(images, lamb, mean, logvar)
+            loss, recon_loss, kl_loss = model.loss(images, lamb, mean, logvar)
             loss.backward()
             optimizer.step()
             train_loss_sum += loss.item() * len(images)
+            train_recons_loss_sum += recon_loss.item() * len(images)
+            train_kl_loss_sum += kl_loss.item() * len(images)
+
+        # evaluation
         model.eval()
         eval_loss_sum = 0
+        eval_recons_loss_sum = 0
+        eval_kl_loss_sum = 0
         for images, _ in evalloader:
             images = images.to(device)
             lamb, mean, logvar = model(images)
-            loss = model.loss(images, lamb, mean, logvar)
+            loss, recons_loss, kl_loss = model.loss(images, lamb, mean, logvar)
             eval_loss_sum += loss.item() * len(images)
+            eval_recons_loss_sum += recon_loss.item() * len(images)
+            eval_kl_loss_sum += kl_loss.item() * len(images)
+
+        # save loss history
         train_loss_history.append(train_loss_sum / len(trainloader.dataset))
+        train_recons_loss_history.append(
+            train_recons_loss_sum / len(trainloader.dataset)
+        )
+        train_kl_loss_history.append(train_kl_loss_sum / len(trainloader.dataset))
         eval_loss_history.append(eval_loss_sum / len(evalloader.dataset))
+        eval_recons_loss_history.append(eval_recons_loss_sum / len(evalloader.dataset))
+        eval_kl_loss_history.append(eval_kl_loss_sum / len(evalloader.dataset))
         if train_log != -1 and (epoch + 1) % train_log == 0:
             print(
-                f"epoch: {epoch}, train loss: {loss.item()}, eval loss: {loss.item()}"
+                "epoch: {}".format(epoch),
+                "train_loss: {:.2f}".format(train_loss_history[-1]),
+                "train_recons_loss: {:.2f}".format(train_recons_loss_history[-1]),
+                "train_kl_loss: {:.2f}".format(train_kl_loss_history[-1]),
+                "eval_loss: {:.2f}".format(eval_loss_history[-1]),
+                "eval_recons_loss: {:.2f}".format(eval_recons_loss_history[-1]),
+                "eval_kl_loss: {:.2f}".format(eval_kl_loss_history[-1]),
             )
 
     # save
@@ -127,11 +156,15 @@ def train(
             json.dump(settings, f)
         plot_loss_curve(
             train_loss_history,
+            train_recons_loss_history,
+            train_kl_loss_history,
             os.path.join(save_dir, "train", "train_loss.png"),
             "Train Loss",
         )
         plot_loss_curve(
-            train_loss_history,
+            eval_loss_history,
+            eval_recons_loss_history,
+            eval_kl_loss_history,
             os.path.join(save_dir, "train", "eval_loss.png"),
             "Eval Loss",
         )
