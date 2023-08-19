@@ -7,6 +7,7 @@ from ..data.dataset import prepare_dataloader
 from ..method.vae import VAE, BetaVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
+from .change_one_variable import visualize_change_one_variable
 
 
 @pytest.fixture(
@@ -40,7 +41,15 @@ def model_and_data(request):
 def directory_operation():
     save_dir = os.path.join(os.path.dirname(__file__), "..", "..", "result", "test")
     os.makedirs(os.path.join(save_dir, "eval"))
+    os.mkdir(os.path.join(save_dir, "eval", "change_one_variable_train"))
+    os.mkdir(os.path.join(save_dir, "eval", "change_one_variable_eval"))
     yield save_dir
+    for file in os.listdir(os.path.join(save_dir, "eval", "change_one_variable_train")):
+        os.remove(os.path.join(save_dir, "eval", "change_one_variable_train", file))
+    for file in os.listdir(os.path.join(save_dir, "eval", "change_one_variable_eval")):
+        os.remove(os.path.join(save_dir, "eval", "change_one_variable_eval", file))
+    os.rmdir(os.path.join(save_dir, "eval", "change_one_variable_train"))
+    os.rmdir(os.path.join(save_dir, "eval", "change_one_variable_eval"))
     for file in os.listdir(os.path.join(save_dir, "eval")):
         os.remove(os.path.join(save_dir, "eval", file))
     os.rmdir(os.path.join(save_dir, "eval"))
@@ -92,3 +101,42 @@ def test_visualize_latent_distribution(model_and_data, directory_operation):
     )
     assert os.path.exists(os.path.join(save_dir, "eval", "latent_dist_train.png"))
     assert os.path.exists(os.path.join(save_dir, "eval", "latent_dist_eval.png"))
+
+
+def test_visualize_change_one_variable(model_and_data, directory_operation):
+    model, trainloader, evalloader, device = model_and_data
+    save_dir = directory_operation
+    visualize_change_one_variable(
+        model,
+        trainloader,
+        os.path.join(save_dir, "eval", "change_one_variable_train"),
+        device,
+        num_input=2,
+        num_sample=3,
+    )
+    visualize_change_one_variable(
+        model,
+        evalloader,
+        os.path.join(save_dir, "eval", "change_one_variable_eval"),
+        device,
+        num_input=2,
+        num_sample=7,
+    )
+    for i in range(3):
+        assert os.path.exists(
+            os.path.join(
+                save_dir,
+                "eval",
+                "change_one_variable_train",
+                f"dim_{i}.png",
+            )
+        )
+    for i in range(7):
+        assert os.path.exists(
+            os.path.join(
+                save_dir,
+                "eval",
+                "change_one_variable_eval",
+                f"dim_{i}.png",
+            )
+        )

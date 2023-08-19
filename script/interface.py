@@ -35,8 +35,10 @@ def main():
     parser_eval.add_argument("--save_dir", type=str, required=True)
     parser_eval.add_argument("--device", type=str, required=True)
     parser_eval.add_argument("--recons", action="store_true")
-    parser_eval.add_argument("--num", type=int, default=5)
+    parser_eval.add_argument("--num_recons", type=int, default=5)
     parser_eval.add_argument("--latent_dist", action="store_true")
+    parser_eval.add_argument("--change_one_variable", action="store_true")
+    parser_eval.add_argument("--num_change_one_variable", type=int, default=2)
 
     args = parser.parse_args()
     kwargs = args.__dict__

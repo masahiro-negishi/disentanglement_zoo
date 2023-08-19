@@ -48,3 +48,4 @@ def visualize_reconstruction(
         ax2.imshow(reconstruction[i].permute(1, 2, 0))
         ax2.axis("off")
     plt.savefig(save_path)
+    plt.close(fig)

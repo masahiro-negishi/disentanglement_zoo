@@ -11,11 +11,18 @@ class VAE(nn.Module):
         super().__init__()
         self.encoder = Encoder(channels, z_dim)
         self.decoder = Decoder(channels, z_dim)
+        self.z_dim = z_dim
 
     def forward(self, x: torch.Tensor):
         z, mean, logvar = self.encoder(x)
         lamb = self.decoder(z)  # x_hat can be sampled from Bernoulli(lamb)
         return lamb, mean, logvar
+
+    def encode(self, x: torch.Tensor):
+        return self.encoder(x)
+
+    def decode(self, z: torch.Tensor):
+        return self.decoder(z)
 
     def loss(
         self,
@@ -59,12 +66,19 @@ class BetaVAE(nn.Module):
         super().__init__()
         self.encoder = Encoder(channels, z_dim)
         self.decoder = Decoder(channels, z_dim)
+        self.z_dim = z_dim
         self.beta = beta
 
     def forward(self, x: torch.Tensor):
         z, mean, logvar = self.encoder(x)
         lamb = self.decoder(z)  # x_hat can be sampled from Bernoulli(lamb)
         return lamb, mean, logvar
+
+    def encode(self, x: torch.Tensor):
+        return self.encoder(x)
+
+    def decode(self, z: torch.Tensor):
+        return self.decoder(z)
 
     def loss(
         self,

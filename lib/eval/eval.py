@@ -9,16 +9,27 @@ from ..data.dataset import prepare_dataloader
 from ..method.vae import VAE, BetaVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
+from .change_one_variable import visualize_change_one_variable
 
 
-def eval(save_dir: str, recons: bool, num: int, latent_dist: str, device: str):
+def eval(
+    save_dir: str,
+    recons: bool,
+    num_recons: int,
+    latent_dist: str,
+    change_one_variable: bool,
+    num_change_one_variable: int,
+    device: str,
+):
     """evaluate trained model
 
     Args:
         save_dir (str): path to directory where model is saved and evaluation results will be saved
         recons (bool): whether to do reconstruction
-        num (int): # of samples to do reconstruction
+        num_recons (int): # of samples to do reconstruction
         latent_dist (bool): whether to visualize latent distribution
+        change_one_variable (bool): whether to visualize the results of changing one variable
+        num_change_one_variable (int): # of input images for change_one_variable
         device (str): device to use
     """
     if not os.path.exists(save_dir):
@@ -63,14 +74,14 @@ def eval(save_dir: str, recons: bool, num: int, latent_dist: str, device: str):
         visualize_reconstruction(
             model=model,
             dataloader=trainloader,
-            num=num,
+            num=num_recons,
             save_path=os.path.join(save_dir, "eval", "recons_train.png"),
             device=device,
         )
         visualize_reconstruction(
             model=model,
             dataloader=evalloader,
-            num=num,
+            num=num_recons,
             save_path=os.path.join(save_dir, "eval", "recons_eval.png"),
             device=device,
         )
@@ -86,4 +97,21 @@ def eval(save_dir: str, recons: bool, num: int, latent_dist: str, device: str):
             dataloader=evalloader,
             save_path=os.path.join(save_dir, "eval", "latent_dist_eval.png"),
             device=device,
+        )
+    if change_one_variable:
+        os.mkdir(os.path.join(save_dir, "eval", "change_one_variable_train"))
+        os.mkdir(os.path.join(save_dir, "eval", "change_one_variable_eval"))
+        visualize_change_one_variable(
+            model=model,
+            dataloader=trainloader,
+            save_dir=os.path.join(save_dir, "eval", "change_one_variable_train"),
+            device=device,
+            num_input=num_change_one_variable,
+        )
+        visualize_change_one_variable(
+            model=model,
+            dataloader=evalloader,
+            save_dir=os.path.join(save_dir, "eval", "change_one_variable_eval"),
+            device=device,
+            num_input=num_change_one_variable,
         )

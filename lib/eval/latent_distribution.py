@@ -48,3 +48,4 @@ def visualize_latent_distribution(
         ax2.set_xticks([logvar_left, logvar_center, logvar_right])
         ax2.set_yticks([])
     plt.savefig(save_path)
+    plt.close(fig)
