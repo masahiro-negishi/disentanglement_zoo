@@ -113,10 +113,12 @@ def test_train(
         assert os.path.exists(os.path.join(save_dir, "train", "train_loss.png"))
         assert os.path.exists(os.path.join(save_dir, "train", "eval_loss.png"))
         assert os.path.exists(os.path.join(save_dir, "train", "settings.json"))
+        assert os.path.exists(os.path.join(save_dir, "train", "loss.json"))
         os.remove(os.path.join(save_dir, "train", "model.pt"))
         os.remove(os.path.join(save_dir, "train", "train_loss.png"))
         os.remove(os.path.join(save_dir, "train", "eval_loss.png"))
         os.remove(os.path.join(save_dir, "train", "settings.json"))
+        os.remove(os.path.join(save_dir, "train", "loss.json"))
         os.rmdir(os.path.join(save_dir, "train"))
         os.rmdir(save_dir)
 

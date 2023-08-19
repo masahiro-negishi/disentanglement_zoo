@@ -4,7 +4,7 @@
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
-PyTorch reproduction of models for disentangled representation learning
+PyTorch reproduction of models and metrics for disentangled representation learning
 
 ## Environment setup
 All the libraries you need for executing codes are specified in requirements.txt. Note that cuda version should be modified based on your hardware. In addition, libraries for formatters and linters are included in the file as comments. Thus, if you want to write codes additionaly using the same formatters and linters as me, you should comment out the lines and install them as well. If you use venv, you can set up your environments as follows.

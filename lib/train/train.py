@@ -185,3 +185,15 @@ def train(
             os.path.join(save_dir, "train", "eval_loss.png"),
             "Eval Loss",
         )
+        with open(os.path.join(save_dir, "train", "loss.json"), "w") as f:
+            json.dump(
+                {
+                    "train_loss": train_loss_history,
+                    "train_recons_loss": train_recons_loss_history,
+                    "train_kl_loss": train_kl_loss_history,
+                    "eval_loss": eval_loss_history,
+                    "eval_recons_loss": eval_recons_loss_history,
+                    "eval_kl_loss": eval_kl_loss_history,
+                },
+                f,
+            )
