@@ -22,6 +22,7 @@ pip install -r requirements.txt
 
 ## Available metrics
 - visualization of reconstruction of original inputs
+- visualization of traversals in the latent space
 - visualization of distributions of means and logvars
 
 ## Test lib
