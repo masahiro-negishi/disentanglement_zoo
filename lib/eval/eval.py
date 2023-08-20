@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE, BetaVAE
+from ..method.vae import VAE, BetaVAE, AnnealedVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
 from .change_one_variable import visualize_change_one_variable
@@ -49,6 +49,15 @@ def eval(
         model = VAE(channels=3, z_dim=settings["z_dim"])
     elif settings["model_name"] == "BetaVAE":
         model = BetaVAE(channels=3, z_dim=settings["z_dim"], beta=settings["beta"])
+    elif settings["model_name"] == "AnnealedVAE":
+        model = AnnealedVAE(
+            channels=3,
+            z_dim=settings["z_dim"],
+            c_start=settings["c_start"],
+            c_end=settings["c_end"],
+            gamma=settings["gamma"],
+            epochs=settings["epochs"],
+        )
     else:
         raise ValueError(f"{settings['model_name']} is not supported")
     if device == "cuda":

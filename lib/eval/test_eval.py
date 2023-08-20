@@ -4,14 +4,19 @@ import pytest
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE, BetaVAE
+from ..method.vae import VAE, BetaVAE, AnnealedVAE
 from .latent_distribution import visualize_latent_distribution
 from .reconstruction import visualize_reconstruction
 from .change_one_variable import visualize_change_one_variable
 
 
 @pytest.fixture(
-    scope="module", params=[("shapes3d", "cpu", "VAE"), ("shapes3d", "cuda", "BetaVAE")]
+    scope="module",
+    params=[
+        ("shapes3d", "cpu", "VAE"),
+        ("shapes3d", "cuda", "BetaVAE"),
+        ("shapes3d", "cuda", "AnnealedVAE"),
+    ],
 )
 def model_and_data(request):
     if request.param[1] == "cuda" and not torch.cuda.is_available():
@@ -31,6 +36,15 @@ def model_and_data(request):
     elif request.param[2] == "BetaVAE":
         model = BetaVAE(
             channels=trainloader.dataset.observation_shape[0], z_dim=10, beta=5.0
+        ).to(request.param[1])
+    elif request.param[2] == "AnnealedVAE":
+        model = AnnealedVAE(
+            channels=trainloader.dataset.observation_shape[0],
+            z_dim=10,
+            c_start=0.0,
+            c_end=5.0,
+            gamma=1000,
+            epochs=3,
         ).to(request.param[1])
     else:
         raise ValueError(f"{request.param[2]} is not supported")

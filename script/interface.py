@@ -16,6 +16,7 @@ def main():
     subparsers_model = parser_train.add_subparsers(dest="model_name")
     _ = subparsers_model.add_parser("VAE")
     parser_BetaVAE = subparsers_model.add_parser("BetaVAE")
+    parser_AnnealedVAE = subparsers_model.add_parser("AnnealedVAE")
 
     parser_train.add_argument("--dataset", type=str, required=True)
     parser_train.add_argument("--train_size", type=int, required=True)
@@ -31,6 +32,9 @@ def main():
     parser_train.add_argument("--save_dir", type=str, default=".")
 
     parser_BetaVAE.add_argument("--beta", type=float, required=True)
+    parser_AnnealedVAE.add_argument("--c_start", type=float, required=True)
+    parser_AnnealedVAE.add_argument("--c_end", type=float, required=True)
+    parser_AnnealedVAE.add_argument("--gamma", type=float, required=True)
 
     parser_eval.add_argument("--save_dir", type=str, required=True)
     parser_eval.add_argument("--device", type=str, required=True)

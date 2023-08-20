@@ -54,6 +54,21 @@ from .train import train
             True,
             os.path.join(os.path.dirname(__file__), "..", "..", "result", "test"),
         ),
+        (
+            "shapes3d",
+            50,
+            25,
+            10,
+            "AnnealedVAE",
+            2,
+            30,
+            "cuda",
+            1e-3,
+            4,
+            2,
+            True,
+            os.path.join(os.path.dirname(__file__), "..", "..", "result", "test"),
+        ),
     ],
 )
 def test_train(
@@ -105,6 +120,25 @@ def test_train(
             save,
             save_dir,
             beta=5.0,
+        )
+    elif model_name == "AnnealedVAE":
+        train(
+            dataset,
+            train_size,
+            eval_size,
+            batch_size,
+            model_name,
+            seed,
+            z_dim,
+            device,
+            lr,
+            epochs,
+            train_log,
+            save,
+            save_dir,
+            c_start=1,
+            c_end=10,
+            gamma=1000,
         )
     else:
         raise ValueError(f"{model_name} is not supported")

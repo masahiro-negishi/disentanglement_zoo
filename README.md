@@ -18,6 +18,7 @@ pip install -r requirements.txt
 ## Available models
 - VAE
 - BetaVAE
+- AnnealedVAE
 
 ## Available metrics
 - visualization of reconstruction of original inputs

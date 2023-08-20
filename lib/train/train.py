@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from ..data.dataset import prepare_dataloader
-from ..method.vae import VAE, BetaVAE
+from ..method.vae import VAE, BetaVAE, AnnealedVAE
 from .loss_curve import plot_loss_curve
 
 
@@ -80,6 +80,15 @@ def train(
             z_dim=z_dim,
             beta=kwargs["beta"],
         ).to(device)
+    elif model_name == "AnnealedVAE":
+        model = AnnealedVAE(
+            channels=trainloader.dataset.observation_shape[0],
+            z_dim=z_dim,
+            c_start=kwargs["c_start"],
+            c_end=kwargs["c_end"],
+            gamma=kwargs["gamma"],
+            epochs=epochs,
+        ).to(device)
     else:
         raise ValueError("invalid model name")
 
@@ -123,6 +132,10 @@ def train(
             eval_loss_sum += loss.item() * len(images)
             eval_recons_loss_sum += recon_loss.item() * len(images)
             eval_kl_loss_sum += kl_loss.item() * len(images)
+
+        # update c if model is AnnealedVAE
+        if model_name == "AnnealedVAE":
+            model.next_epoch()
 
         # save loss history
         train_loss_history.append(train_loss_sum / len(trainloader.dataset))
@@ -168,6 +181,10 @@ def train(
         }
         if model_name == "BetaVAE":
             settings["beta"] = kwargs["beta"]
+        elif model_name == "AnnealedVAE":
+            settings["c_start"] = kwargs["c_start"]
+            settings["c_end"] = kwargs["c_end"]
+            settings["gamma"] = kwargs["gamma"]
         with open(os.path.join(save_dir, "train", "settings.json"), "w") as f:
             json.dump(settings, f)
         # loss curve
